@@ -12,13 +12,15 @@ class Augmentor:
 
     def change_speed(self, audio):
         speed_factor = np.random.uniform(*self.speed_change_range)
-        new_length = int(audio.shape[0] / speed_factor)
-        print(speed_factor, new_length)
-        return np.interp(np.linspace(0, audio.shape[0], new_length), np.arange(audio.shape[0]), audio)
+        if len(audio.shape) == 1: # mono
+            new_length = int(audio.shape[0] / speed_factor)
+            return np.interp(np.linspace(0, audio.shape[0], new_length), np.arange(audio.shape[0]), audio)
+        else: # stereo
+            new_length = int(audio.shape[1] / speed_factor)
+            return np.interp(np.linspace(0, audio.shape[1], new_length), np.arange(audio.shape[1]), audio)
 
     def change_volume(self, audio):
         volume_factor = np.random.uniform(*self.volume_change_range)
-        print(volume_factor)
         return audio * volume_factor
 
     def augment(self, audio):
